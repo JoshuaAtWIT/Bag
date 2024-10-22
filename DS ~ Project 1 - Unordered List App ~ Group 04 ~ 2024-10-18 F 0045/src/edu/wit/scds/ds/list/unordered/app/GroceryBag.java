@@ -42,9 +42,9 @@ import java.util.Objects ;
  *
  * @author David M Rosenberg
  *
- * @version 0.1 2024-10-17 Initial skeleton
+ * @version 0.2 2024-10-18 Initialization
  * 
- * @author Your Name // TODO replace with your full name
+ * @author Matthew Santorsa
  * 
  * @version 1.0 2024-10-18 Initial implementation
  *     <ul>
@@ -130,10 +130,8 @@ public class GroceryBag implements Comparable<GroceryBag>
 
         initializeCounters() ;
 
-        // set the capacity according to specification
-        // TODO add argument to the instantiation
-        this.groceryBag = new ArrayBag<>() ;    // STUB invocation
-
+        
+        this.groceryBag = new ArrayBag<>( GROCERY_BAG_MAX_ITEM_COUNT ) ;
         this.integrityOk = true ;   // now we're usable
 
         }   // end no-arg constructor
@@ -474,9 +472,12 @@ public class GroceryBag implements Comparable<GroceryBag>
         {
 
         checkIntegrity() ;
-
-        // TODO implement this
-        return false ;  // STUB value
+        
+        if( this.groceryBag.getCurrentSize() > 0 )
+        {
+        	return false ;
+        }
+        return true ;
 
         }   // end isEmpty()
 
@@ -492,8 +493,11 @@ public class GroceryBag implements Comparable<GroceryBag>
 
         checkIntegrity() ;
 
-        // TODO implement this
-        return false ;  // STUB value
+        if( this.groceryBag.getCurrentSize() > 0 )
+        {
+        	return true ;
+        }
+        return false ;
 
         }   // end isFull()
 
@@ -561,10 +565,11 @@ public class GroceryBag implements Comparable<GroceryBag>
         final GroceryItem[] allGroceryItems = toArray() ;  // we'll return an array of the items
 
         // reset all grocery bag state - empty the actual Bag contents
-        // this.groceryBag. ;  // TODO uncomment then invoke the appropriate method to do the work
+        this.groceryBag.clear() ;
 
         // reset state to empty
         // TODO invoke the appropriate method to do the work
+        // does anyone else know what this means? ^
 
         return allGroceryItems ;
 
@@ -582,7 +587,7 @@ public class GroceryBag implements Comparable<GroceryBag>
 
         checkIntegrity() ;
 
-        final int itemCount = 0 ;   // TODO replace 0 with a meaningful value
+        final int itemCount = groceryBag.getCurrentSize() ;   
 
         final GroceryItem[] groceryItems = new GroceryItem[ itemCount ] ;
 
@@ -737,8 +742,69 @@ public class GroceryBag implements Comparable<GroceryBag>
     private void accountForAddedItem( final GroceryItem groceryItem )
         {
 
-        // TODO implement this - HINT copy the code from accountForRemovedItem() then modify
+    	// capacity fields
 
+        this.remainingItemsAvailable-- ;    // there's room for one less item in the grocery bag
+        this.remainingSpaceAvailable -= groceryItem.size.sizeValue ;
+        this.remainingWeightAvailable -= groceryItem.weight.weightValue ;
+
+        
+        // compatibility fields
+        
+        if ( groceryItem.isBreakable )
+            {
+            this.breakableItemCount++ ;
+            }
+        
+        if ( groceryItem.isPerishable )
+            {
+            this.perishableItemCount++ ;
+            }
+
+        if ( groceryItem.isRigid )
+            {
+            this.rigidItemCount++ ;
+            }
+
+        
+        // sizes
+        
+        if ( groceryItem.isSmall )
+            {
+            this.smallItemCount++ ;
+            }
+        
+        if ( groceryItem.isLarge )
+            {
+            
+            this.largeItemCount++ ;
+            }
+        
+        
+        // weights
+        
+        if ( groceryItem.isLight )
+            {
+            this.lightItemCount++ ;
+            }
+
+        if ( groceryItem.isHeavy )
+            {
+            this.heavyItemCount++ ;
+            }
+
+        
+        // firmnesses
+        
+        if ( groceryItem.isSoft )
+            {
+            this.softItemCount++ ;
+            }
+
+        if ( groceryItem.isHard )
+            {
+            this.hardItemCount++ ;
+            }
         }   // end accountForAddedItem()
 
 
@@ -845,10 +911,10 @@ public class GroceryBag implements Comparable<GroceryBag>
         // capacity fields
 
         // per specifications
-        // TODO set to appropriate limits
-        this.remainingItemsAvailable = 0 ;  // STUB
-        this.remainingSpaceAvailable = 0 ;  // STUB
-        this.remainingWeightAvailable = 0 ; // STUB
+        
+        this.remainingItemsAvailable = GROCERY_BAG_MAX_ITEM_COUNT ;  
+        this.remainingSpaceAvailable = GROCERY_BAG_MAX_VOLUME ;  
+        this.remainingWeightAvailable = GROCERY_BAG_MAX_WEIGHT ; 
 
         // compatibility fields
         this.breakableItemCount = 0 ;
